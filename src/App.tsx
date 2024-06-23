@@ -78,7 +78,7 @@ export default function App() {
   );
 
   // create a state variable for our connection
-  const connection = new Connection(clusterApiUrl("testnet"), "finalized");
+  const connection = new Connection(clusterApiUrl("devnet", true), "processed");
   
   // connection to use with local solana test validator
   // const connection = new Connection("http://127.0.0.1:8899", "confirmed");
@@ -103,23 +103,25 @@ export default function App() {
     console.log('Sender account: ', senderAccount.publicKey.toString());
     console.log('Airdropping 2 SOL to Sender Wallet');
 
+    console.log(senderAccount, senderAccount.publicKey.toString());
+
     // save this new KeyPair into this state variable
     setSenderKeypair(senderAccount);
 
-    // request airdrop into this new account
-    const airdropSig = await connection.requestAirdrop(
-      senderAccount.publicKey, 
-      2 * LAMPORTS_PER_SOL
-    )
+    // request airdrop into this new account -  requested through faucet
+    // const airdropSig = await connection.requestAirdrop(
+    //   senderAccount.publicKey, 
+    //   2 * LAMPORTS_PER_SOL
+    // )
 
-    const latestBlockHash = await connection.getLatestBlockhash();
+    // const latestBlockHash = await connection.getLatestBlockhash();
 
-    // now confirm the transaction
-    await connection.confirmTransaction({
-      blockhash: latestBlockHash.blockhash,
-      lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-      signature: airdropSig
-    });
+    // // now confirm the transaction
+    // await connection.confirmTransaction({
+    //   blockhash: latestBlockHash.blockhash,
+    //   lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+    //   signature: airdropSig
+    // });
 
     console.log('Wallet Balance: ' + (await connection.getBalance(senderAccount.publicKey)) / LAMPORTS_PER_SOL);
   }
